@@ -3,7 +3,7 @@ import type { Coords } from "@/types/Coords";
 
 // End dimension zone constants ──────────────────────────────────────────────
 /** Approximate radius of the central End island (blocks). */
-export const END_ISLAND_RADIUS = 70;
+export const END_ISLAND_RADIUS = 100;
 /** Distance at which outer islands begin (blocks). */
 export const END_OUTER_START = 1000;
 
