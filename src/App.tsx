@@ -1,7 +1,12 @@
+import { ModalProvider } from "@/context/ModalProvider";
 import { Calculator } from "@/pages/Calculator";
 
 function App() {
-	return <Calculator />;
+	return (
+		<ModalProvider>
+			<Calculator />
+		</ModalProvider>
+	);
 }
 
 export default App;

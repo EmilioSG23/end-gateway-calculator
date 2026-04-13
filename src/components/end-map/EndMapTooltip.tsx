@@ -15,7 +15,7 @@ export function EndMapTooltip({ tooltip }: EndMapTooltipProps) {
 				top: Math.max(8, tooltip.y - 8),
 			}}
 		>
-			<div className="bg-deep/95 border border-border rounded px-3 py-2 text-[11px] min-w-[168px] backdrop-blur-sm shadow-lg shadow-black/40">
+			<div className="bg-deep/95 border border-border rounded px-3 py-2 text-[11px] min-w-42 backdrop-blur-sm shadow-lg shadow-black/40">
 				<div className="text-text-primary font-medium mb-1.5 font-mono">{tooltip.title}</div>
 				{tooltip.rows.map((r) => (
 					<div key={r.label} className="flex justify-between gap-4 leading-5">
