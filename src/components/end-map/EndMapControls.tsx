@@ -24,21 +24,21 @@ export function EndMapControls({
 				<button
 					onClick={onZoomIn}
 					title="Zoom in"
-					className="w-9 h-9 rounded border border-border bg-deep/90 text-bolt-glow text-lg font-bold hover:bg-elevated hover:border-bolt transition-colors flex items-center justify-center"
+					className="cursor-pointer size-9 rounded border border-border bg-deep/90 text-bolt-glow text-lg font-bold hover:bg-elevated hover:border-bolt transition-colors flex items-center justify-center"
 				>
 					+
 				</button>
 				<button
 					onClick={onZoomOut}
 					title="Zoom out"
-					className="w-9 h-9 rounded border border-border bg-deep/90 text-bolt-glow text-lg font-bold hover:bg-elevated hover:border-bolt transition-colors flex items-center justify-center"
+					className="cursor-pointer size-9 rounded border border-border bg-deep/90 text-bolt-glow text-lg font-bold hover:bg-elevated hover:border-bolt transition-colors flex items-center justify-center"
 				>
 					−
 				</button>
 				<button
 					onClick={onReset}
 					title="Reset view"
-					className="w-9 h-9 rounded border border-border bg-deep/90 text-text-secondary text-xs hover:bg-elevated hover:border-bolt hover:text-bolt-glow transition-colors flex items-center justify-center"
+					className="cursor-pointer size-9 rounded border border-border bg-deep/90 text-text-secondary text-xs hover:bg-elevated hover:border-bolt hover:text-bolt-glow transition-colors flex items-center justify-center"
 				>
 					⊡
 				</button>
@@ -49,7 +49,7 @@ export function EndMapControls({
 				<button
 					onClick={onGoToOrigin}
 					title="Go to origin gateway"
-					className="px-3 py-1.5 rounded border border-border bg-deep/90 text-arc text-xs hover:bg-elevated hover:border-arc-dim transition-colors"
+					className="cursor-pointer px-3 py-1.5 rounded border border-border bg-deep/90 text-arc text-xs hover:bg-elevated hover:border-arc-dim transition-colors"
 				>
 					⊕ Origin
 				</button>
@@ -57,7 +57,7 @@ export function EndMapControls({
 					<button
 						onClick={onGoToFinal}
 						title="Go to final coordinates"
-						className="px-3 py-1.5 rounded border border-border bg-deep/90 text-bolt-glow text-xs hover:bg-elevated hover:border-bolt transition-colors"
+						className="cursor-pointer px-3 py-1.5 rounded border border-border bg-deep/90 text-bolt-glow text-xs hover:bg-elevated hover:border-bolt transition-colors"
 					>
 						⊗ Destination
 					</button>

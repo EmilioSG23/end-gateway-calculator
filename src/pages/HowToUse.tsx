@@ -97,19 +97,6 @@ export function HowToUse() {
 				</h2>
 			</div>
 
-			{/* Important Message */}
-			<div
-				className="mb-6 px-4 py-3 rounded border bg-red-700/40 text-[11px] text-red-100"
-				style={{ borderColor: "rgba(185,28,28,0.65)" }}
-			>
-				<p className="font-bold text-red-300 mb-1">Important:</p>
-				<p className="text-red-100">
-					This calculator was tested on Minecraft Java Edition 1.17.1. It should also work on
-					versions which use the same End Gateway generation as 1.17.1, like 1.13 through 1.21.
-					Versions 1.12 and earlier generate End Gateways differently, so this method is not
-					applicable there. It is unknown if Minecraft Bedrock Edition has this same generation.
-				</p>
-			</div>
 			{/* Tabs */}
 			<div className="flex gap-1 mb-5 border-b border-border pb-0">
 				{(["app", "minecraft"] as Tab[]).map((tab) => {
@@ -137,38 +124,42 @@ export function HowToUse() {
 			</div>
 
 			{/* Steps */}
-			<ol className="flex flex-col gap-4">
-				{steps.map((step) => (
-					<li key={step.icon} className="flex gap-4 group">
-						{/* Step number */}
-						<div className="flex-none w-8 h-8 rounded border border-border bg-elevated flex items-center justify-center">
-							<span
-								className={`text-[10px] font-display font-bold ${
-									active === "app" ? "text-bolt" : "text-arc"
-								}`}
-							>
-								{step.icon}
-							</span>
-						</div>
+			<div className="overflow-y-auto pr-2" style={{ maxHeight: "min(60vh, 480px)" }}>
+				<ol className="flex flex-col gap-4">
+					{steps.map((step) => (
+						<li key={step.icon} className="flex gap-4 group">
+							{/* Step number */}
+							<div className="flex-none w-8 h-8 rounded border border-border bg-elevated flex items-center justify-center">
+								<span
+									className={`text-[10px] font-display font-bold ${
+										active === "app" ? "text-bolt" : "text-arc"
+									}`}
+								>
+									{step.icon}
+								</span>
+							</div>
 
-						{/* Content */}
-						<div className="flex-1 min-w-0 pt-0.5">
-							<p className="text-[11px] font-bold text-text-secondary uppercase tracking-wide mb-1">
-								{step.title}
-							</p>
-							<p className="text-[12px] text-text-muted leading-relaxed">{step.desc}</p>
-						</div>
-					</li>
-				))}
-			</ol>
+							{/* Content */}
+							<div className="flex-1 min-w-0 pt-0.5">
+								<p className="text-[11px] font-bold text-text-secondary uppercase tracking-wide mb-1">
+									{step.title}
+								</p>
+								<p className="text-[12px] text-text-muted leading-relaxed break-words">
+									{step.desc}
+								</p>
+							</div>
+						</li>
+					))}
+				</ol>
 
-			{/* Footer hint */}
-			<div className="mt-6 pt-4 border-t border-border">
-				<p className="text-[10px] text-text-muted text-center tracking-wide">
-					{active === "app"
-						? "All calculations update in real time — no need to press any button."
-						: "Coordinates shown in the F3 debug screen (Java Edition only)."}
-				</p>
+				{/* Footer hint */}
+				<div className="mt-6 pt-4 border-t border-border">
+					<p className="text-[10px] text-text-muted text-center tracking-wide">
+						{active === "app"
+							? "All calculations update in real time — no need to press any button."
+							: "Coordinates shown in the F3 debug screen (Java Edition only)."}
+					</p>
+				</div>
 			</div>
 		</div>
 	);
