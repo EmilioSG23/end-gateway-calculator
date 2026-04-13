@@ -3,7 +3,7 @@ import type { Coords } from "@/types/Coords";
 export function calculate({ coords, distance }: { coords: Coords; distance: number }): Coords[] {
 	const angle = calculateAngle(coords);
 	const finalCoords = calculateFinalCoords({ coords, distance });
-	return drawLine({ finalCoords, angle });
+	return drawLine({ finalCoords, angle, minDistance: distance });
 }
 
 export function calculateAngle(coords: Coords): number {

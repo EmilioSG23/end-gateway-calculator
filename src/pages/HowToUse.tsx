@@ -55,7 +55,7 @@ const MINECRAFT_STEPS: Step[] = [
 	{
 		icon: "I",
 		title: "Build the guiding line",
-		desc: "Build a line guiding with the block list from the max point to the target coordinates. Recommend build the line with an instaminable block like slime or netherrack in case you want to quit this guide line after manipulate the Gateway.",
+		desc: "Build a line guiding with the block list from the max point to the target coordinates. Recommend build the line with an instaminable block like slime or netherrack in case you want to quit this guide line after manipulate the Gateway. It's also recommended to use World Edit with the /line command for a quick guide.",
 	},
 	{
 		icon: "II",

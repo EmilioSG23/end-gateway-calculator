@@ -56,24 +56,20 @@ export function drawEndZones(
 	ctx.fillStyle = ENDSTONE_OUTER;
 	ctx.fill("evenodd");
 
-	// stroke the outer ring so it's clear where the void begins
-	ctx.beginPath();
-	ctx.arc(originX, originY, outerR, 0, Math.PI * 2);
-	ctx.strokeStyle = ENDSTONE_BORDER;
-	ctx.lineWidth = Math.max(1, 1.5 * zoom);
-	ctx.stroke();
-
-	// Central island: lighter, semi-transparent circle
+	// Central island: lighter, semi-transparent fill
 	ctx.beginPath();
 	ctx.arc(originX, originY, islandR, 0, Math.PI * 2);
 	ctx.fillStyle = ENDSTONE_CENTER;
 	ctx.fill();
 
-	// stroke the central island edge
-	ctx.beginPath();
-	ctx.arc(originX, originY, islandR, 0, Math.PI * 2);
+	// Stroke zone borders with smooth arcs (no pixelated block border)
 	ctx.strokeStyle = ENDSTONE_BORDER;
 	ctx.lineWidth = Math.max(1, 1.5 * zoom);
+	ctx.beginPath();
+	ctx.arc(originX, originY, outerR, 0, Math.PI * 2);
+	ctx.stroke();
+	ctx.beginPath();
+	ctx.arc(originX, originY, islandR, 0, Math.PI * 2);
 	ctx.stroke();
 
 	ctx.restore();
@@ -111,6 +107,39 @@ export function drawCompass(ctx: CanvasRenderingContext2D, W: number): void {
 	ctx.restore();
 }
 
+/**
+ * Draw chunk grid lines (every 16 blocks). Separated so drawGrid stays smaller.
+ */
+export function drawChunksGrid(
+	ctx: CanvasRenderingContext2D,
+	W: number,
+	H: number,
+	originX: number,
+	originY: number,
+	zoom: number,
+): void {
+	const chunkSizePx = 16 * BLOCK_SIZE * zoom;
+	const chunkAlpha = Math.min(0.6, Math.max(0.1, chunkSizePx / 80));
+	ctx.strokeStyle = `rgba(75,60,115,${chunkAlpha})`;
+	ctx.lineWidth = Math.max(0.5, Math.min(1.5, zoom));
+	ctx.beginPath();
+	const startChunkCol = Math.floor(-originX / chunkSizePx);
+	const endChunkCol = Math.ceil((W - originX) / chunkSizePx);
+	for (let col = startChunkCol; col <= endChunkCol; col++) {
+		const x = originX + col * chunkSizePx;
+		ctx.moveTo(x, 0);
+		ctx.lineTo(x, H);
+	}
+	const startChunkRow = Math.floor(-originY / chunkSizePx);
+	const endChunkRow = Math.ceil((H - originY) / chunkSizePx);
+	for (let row = startChunkRow; row <= endChunkRow; row++) {
+		const y = originY + row * chunkSizePx;
+		ctx.moveTo(0, y);
+		ctx.lineTo(W, y);
+	}
+	ctx.stroke();
+}
+
 export function drawGrid(
 	ctx: CanvasRenderingContext2D,
 	W: number,
@@ -118,34 +147,41 @@ export function drawGrid(
 	zoom: number,
 	pan: { x: number; y: number },
 ): { originX: number; originY: number } {
-	const gridStep = BLOCK_SIZE * zoom;
-	const gridAlpha = Math.min(0.3, Math.max(0.05, gridStep / 60));
+	const blockSizePx = BLOCK_SIZE * zoom;
+	const chunkSizePx = 16 * BLOCK_SIZE * zoom;
 	const originX = W / 2 + pan.x * zoom;
 	const originY = H / 2 + pan.y * zoom;
+	const showChunkGrid = chunkSizePx >= 4;
 
-	ctx.strokeStyle = `rgba(42,42,74,${gridAlpha})`;
+	// Block grid lines — skip chunk-boundary columns when chunk grid is rendered
+	const blockAlpha = Math.min(0.3, Math.max(0.03, blockSizePx / 80));
+	ctx.strokeStyle = `rgba(42,42,74,${blockAlpha})`;
 	ctx.lineWidth = 0.5;
-
-	const startCol = Math.floor(-originX / gridStep);
-	const endCol = Math.ceil((W - originX) / gridStep);
+	ctx.beginPath();
+	const startCol = Math.floor(-originX / blockSizePx);
+	const endCol = Math.ceil((W - originX) / blockSizePx);
 	for (let col = startCol; col <= endCol; col++) {
-		const x = originX + col * gridStep;
-		ctx.beginPath();
+		if (showChunkGrid && col % 16 === 0) continue; // drawn by chunk grid pass
+		const x = originX + col * blockSizePx;
 		ctx.moveTo(x, 0);
 		ctx.lineTo(x, H);
-		ctx.stroke();
 	}
-
-	const startRow = Math.floor(-originY / gridStep);
-	const endRow = Math.ceil((H - originY) / gridStep);
+	const startRow = Math.floor(-originY / blockSizePx);
+	const endRow = Math.ceil((H - originY) / blockSizePx);
 	for (let row = startRow; row <= endRow; row++) {
-		const y = originY + row * gridStep;
-		ctx.beginPath();
+		if (showChunkGrid && row % 16 === 0) continue;
+		const y = originY + row * blockSizePx;
 		ctx.moveTo(0, y);
 		ctx.lineTo(W, y);
-		ctx.stroke();
+	}
+	ctx.stroke();
+
+	// Chunk grid lines (every 16 blocks) — draw via helper
+	if (showChunkGrid) {
+		drawChunksGrid(ctx, W, H, originX, originY, zoom);
 	}
 
+	// Axis lines (always visible)
 	ctx.strokeStyle = "rgba(130, 112, 172, 0.75)";
 	ctx.lineWidth = 1;
 	ctx.beginPath();
@@ -160,7 +196,7 @@ export function drawGrid(
 	return { originX, originY };
 }
 
-/** Dashed rings at the 768/1024 build-line boundaries. */
+/** Pixelated (Minecraft-style) rings at the 768/1024 build-line boundaries. */
 export function drawGatewayRings(
 	ctx: CanvasRenderingContext2D,
 	originX: number,
@@ -182,6 +218,7 @@ export function drawGatewayRings(
 	ctx.beginPath();
 	ctx.arc(originX, originY, maxR, 0, Math.PI * 2);
 	ctx.stroke();
+
 	ctx.restore();
 }
 
@@ -214,11 +251,9 @@ export function drawBuildLine(
 	if (gridStep > 4) {
 		for (const b of blocks) {
 			const { cx, cy } = worldToCanvas(b.x, b.z, W, H);
-			const r = Math.max(1.5, 2.5 * zoom);
-			ctx.beginPath();
-			ctx.arc(cx, cy, r, 0, Math.PI * 2);
+			const halfSize = Math.max(1.5, 2.5 * zoom);
 			ctx.fillStyle = "#c084fc";
-			ctx.fill();
+			ctx.fillRect(cx - halfSize, cy - halfSize, halfSize * 2, halfSize * 2);
 		}
 	}
 }
@@ -260,12 +295,11 @@ export function drawFinalPoint(
 	ctx.fillStyle = glowGrad;
 	ctx.fill();
 
-	ctx.beginPath();
-	ctx.arc(fx, fz, Math.max(3, 5 * zoom), 0, Math.PI * 2);
+	const halfSize = Math.max(3, 5 * zoom);
 	ctx.fillStyle = "#e0aaff";
 	ctx.shadowColor = "#c084fc";
 	ctx.shadowBlur = 16;
-	ctx.fill();
+	ctx.fillRect(fx - halfSize, fz - halfSize, halfSize * 2, halfSize * 2);
 	ctx.shadowBlur = 0;
 
 	if (gridStep > 3) {
@@ -295,12 +329,11 @@ export function drawOriginPoint(
 	ctx.fillStyle = grad;
 	ctx.fill();
 
-	ctx.beginPath();
-	ctx.arc(gx, gz, Math.max(4, 6 * zoom), 0, Math.PI * 2);
+	const halfSize = Math.max(4, 6 * zoom);
 	ctx.fillStyle = "#7dd3fc";
 	ctx.shadowColor = "#7dd3fc";
 	ctx.shadowBlur = 20;
-	ctx.fill();
+	ctx.fillRect(gx - halfSize, gz - halfSize, halfSize * 2, halfSize * 2);
 	ctx.shadowBlur = 0;
 
 	if (gridStep > 3) {
