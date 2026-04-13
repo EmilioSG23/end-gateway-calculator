@@ -1,6 +1,28 @@
+import { GIT_HUB_URL } from "@/consts";
+import { useModal } from "@/hooks/useModal";
 import { GatewayIcon } from "@/icons/Gateway";
+import { GitHubIcon } from "@/icons/GitHub";
+import { HowToUse } from "@/pages/HowToUse";
+
+function Button({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
+	return (
+		<button
+			onClick={onClick}
+			className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded border border-border text-[10px] uppercase tracking-widest text-text-muted hover:text-bolt-bright hover:border-bolt/60 transition-colors duration-150 cursor-pointer"
+		>
+			{children}
+		</button>
+	);
+}
 
 export function Header() {
+	const { openModal, setWidth } = useModal();
+
+	function handleGuide() {
+		setWidth(600);
+		openModal(<HowToUse />);
+	}
+
 	return (
 		<header className="relative z-10 border-b border-[#1a1a30] bg-deep/80 backdrop-blur-sm">
 			<div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-4">
@@ -16,9 +38,22 @@ export function Header() {
 						The End — Void Navigation System
 					</p>
 				</div>
-				<div className="ml-auto hidden sm:flex items-center gap-2 text-[10px] text-muted">
-					<span className="w-1.5 h-1.5 rounded-full bg-[#a855f7] animate-pulse inline-block" />
-					PORTAL SYNC ACTIVE
+				<div className="ml-auto flex items-center gap-3">
+					{GIT_HUB_URL && (
+						<Button onClick={() => window.open(GIT_HUB_URL, "_blank")}>
+							<GitHubIcon className="w-3.5 h-3.5" />
+							GitHub
+						</Button>
+					)}
+					<Button onClick={handleGuide}>
+						<span className="text-bolt font-display font-bold text-[11px]">?</span>
+						How to use
+					</Button>
+
+					<div className="hidden sm:flex items-center gap-2 text-[10px] text-muted">
+						<span className="w-1.5 h-1.5 rounded-full bg-[#a855f7] animate-pulse inline-block" />
+						PORTAL SYNC ACTIVE
+					</div>
 				</div>
 			</div>
 		</header>

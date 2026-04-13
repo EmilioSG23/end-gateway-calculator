@@ -6,6 +6,8 @@ export const MIN_DISTANCE = 768;
 
 export const CHUNK_SIZE = 16;
 
+export const GIT_HUB_URL = "";
+
 export const END_GATEWAYS: Coords[] = [
 	{ x: 96, z: 0 },
 	{ x: 91, z: 29 },
