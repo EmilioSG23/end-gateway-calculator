@@ -1,5 +1,7 @@
+import { Calculator } from "@/pages/Calculator";
+
 function App() {
-	return <>Hola mundo</>;
+	return <Calculator />;
 }
 
 export default App;
