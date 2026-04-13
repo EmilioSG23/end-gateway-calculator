@@ -1,4 +1,4 @@
-import { MAX_DISTANCE, MIN_DISTANCE } from "@/consts";
+import { MAX_DISTANCE, MEDIUM_DISTANCE, MIN_DISTANCE } from "@/consts";
 import { calculate, calculateAngle, calculateFinalCoords } from "@/logic/calculate";
 import type { Coords } from "@/types/Coords";
 import { useCallback, useMemo, useState } from "react";
@@ -23,7 +23,7 @@ export interface GatewayCalculatorState {
 export function useGatewayCalculator(): GatewayCalculatorState {
 	const [originX, setOriginX] = useState<string>("0");
 	const [originZ, setOriginZ] = useState<string>("0");
-	const [distance, setDistance] = useState<number>(MAX_DISTANCE);
+	const [distance, setDistance] = useState<number>(MEDIUM_DISTANCE);
 
 	const origin: Coords = useMemo(
 		() => ({

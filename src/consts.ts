@@ -1,7 +1,10 @@
-import type { Coords } from "./types/Coords";
+import type { Coords } from "@/types/Coords";
 
-export const MAX_DISTANCE = 1024;
+export const MAX_DISTANCE = 1280;
+export const MEDIUM_DISTANCE = 1024;
 export const MIN_DISTANCE = 768;
+
+export const CHUNK_SIZE = 16;
 
 export const END_GATEWAYS: Coords[] = [
 	{ x: 96, z: 0 },
