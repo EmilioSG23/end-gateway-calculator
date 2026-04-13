@@ -41,7 +41,7 @@ describe("draw line without consecutive duplicates due to rounding", () => {
 		const points = drawLine({ finalCoords, angle });
 		expect(points).toEqual(expectedLine);
 	});
-	it("generates line without consecutive duplicates due to rounding (from {768, 768} to {1024, 1024})", () => {
+	it("generates line without consecutive duplicates due to rounding (from {543, 543} to {724, 724})", () => {
 		const minPoint = Math.round(768 / Math.sqrt(2));
 		const maxPoint = Math.round(1024 / Math.sqrt(2));
 
