@@ -5,7 +5,7 @@ import { StatCard } from "@/components/calculator/StatCard";
 import { EndMap } from "@/components/EndMap";
 import { Header } from "@/components/Header";
 import { SectionHeader } from "@/components/SectionHeader";
-import { MAX_DISTANCE, MIN_DISTANCE } from "@/consts";
+import { CHUNK_SIZE, MAX_DISTANCE, MIN_DISTANCE } from "@/consts";
 import { useGatewayCalculator } from "@/hooks/useGatewayCalculator";
 import { GatewayIcon } from "@/icons/Gateway";
 
@@ -77,8 +77,16 @@ export function Calculator() {
 
 								{finalCoords && (
 									<div className="grid grid-cols-2 gap-2 mb-3">
-										<StatCard label="Final X" value={String(finalCoords.x)} accent />
-										<StatCard label="Final Z" value={String(finalCoords.z)} accent />
+										<StatCard
+											label="Final X [Chunk X]"
+											value={`${finalCoords.x} [${Math.floor(finalCoords.x / CHUNK_SIZE)}]`}
+											accent
+										/>
+										<StatCard
+											label="Final Z [Chunk Z]"
+											value={`${finalCoords.z} [${Math.floor(finalCoords.z / CHUNK_SIZE)}]`}
+											accent
+										/>
 									</div>
 								)}
 

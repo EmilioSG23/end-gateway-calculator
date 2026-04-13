@@ -43,7 +43,7 @@ export function Modal({ isOpen, body, width = 384, onClose }: ModalProps) {
 				onClick={onClose}
 				role="presentation"
 				aria-hidden="true"
-				className={`absolute inset-0 bg-void/80 backdrop-blur-sm transition-opacity duration-200 ease-out ${
+				className={`absolute inset-0 bg-void/25 backdrop-blur-sm transition-opacity duration-200 ease-out ${
 					mounted ? "opacity-100" : "opacity-0"
 				}`}
 			/>
