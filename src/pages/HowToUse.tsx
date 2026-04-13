@@ -70,7 +70,7 @@ const MINECRAFT_STEPS: Step[] = [
 	{
 		icon: "IV",
 		title: "Go to Origin End Gateway",
-		desc: "Travel to the original End Gateway you used to get the coordinates.",
+		desc: "Travel to the original End Gateway you used to get the coordinates. This is the End Gateway you used to get the coordinates",
 	},
 	{
 		icon: "V",
@@ -97,6 +97,19 @@ export function HowToUse() {
 				</h2>
 			</div>
 
+			{/* Important Message */}
+			<div
+				className="mb-6 px-4 py-3 rounded border bg-red-700/40 text-[11px] text-red-100"
+				style={{ borderColor: "rgba(185,28,28,0.65)" }}
+			>
+				<p className="font-bold text-red-300 mb-1">Important:</p>
+				<p className="text-red-100">
+					This calculator was tested on Minecraft Java Edition 1.17.1. It should also work on
+					versions which use the same End Gateway generation as 1.17.1, like 1.13 through 1.21.
+					Versions 1.12 and earlier generate End Gateways differently, so this method is not
+					applicable there. It is unknown if Minecraft Bedrock Edition has this same generation.
+				</p>
+			</div>
 			{/* Tabs */}
 			<div className="flex gap-1 mb-5 border-b border-border pb-0">
 				{(["app", "minecraft"] as Tab[]).map((tab) => {

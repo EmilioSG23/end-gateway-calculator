@@ -8,7 +8,7 @@ function Button({ onClick, children }: { onClick: () => void; children: React.Re
 	return (
 		<button
 			onClick={onClick}
-			className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded border border-border text-[10px] uppercase tracking-widest text-text-muted hover:text-bolt-bright hover:border-bolt/60 transition-colors duration-150 cursor-pointer"
+			className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded border border-border text-[12px] uppercase tracking-widest text-text-primary hover:text-bolt-bright hover:border-bolt/60 transition-colors duration-150 cursor-pointer"
 		>
 			{children}
 		</button>
