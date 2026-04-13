@@ -1,6 +1,121 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap");
 @import "tailwindcss";
 
-@theme{
-	--color-background: #2B2B2B;
-	--font-title: "Radio Canada";
+@theme {
+	/* The End palette */
+	--color-void: #080810;
+	--color-deep: #0d0d1a;
+	--color-surface: #111120;
+	--color-elevated: #161628;
+	--color-border: #2a2a4a;
+	--color-muted: #6a62a0;
+
+	/* End Stone / Purpur */
+	--color-endstone: #c8c07a;
+	--color-purpur: #8b5e9e;
+	--color-purpur-dim: #5a3d68;
+
+	/* Gateway bolt — electric / cyan-violet */
+	--color-bolt: #a855f7;
+	--color-bolt-glow: #c084fc;
+	--color-bolt-bright: #e0aaff;
+	--color-arc: #7dd3fc;
+	--color-arc-dim: #38bdf8;
+
+	/* Text */
+	--color-text-primary: #e8e0f8;
+	--color-text-secondary: #b8aee0;
+	--color-text-muted: #9088c0;
+
+	/* Accent */
+	--color-accent: #a855f7;
+	--color-accent-hover: #c084fc;
+
+	--font-display: "Orbitron", sans-serif;
+	--font-mono: "Share Tech Mono", monospace;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background-color: var(--color-void);
+	color: var(--color-text-primary);
+	font-family: var(--font-mono);
+	margin: 0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+::-webkit-scrollbar-track {
+	background: var(--color-deep);
+}
+::-webkit-scrollbar-thumb {
+	background: var(--color-muted);
+	border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: var(--color-bolt);
+}
+
+/* Subtle star-field background */
+@keyframes twinkle {
+	0%,
+	100% {
+		opacity: 0.3;
+	}
+	50% {
+		opacity: 1;
+	}
+}
+
+.starfield {
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	background-image:
+		radial-gradient(1px 1px at 10% 15%, #c084fc55, transparent),
+		radial-gradient(1px 1px at 25% 8%, #7dd3fc44, transparent),
+		radial-gradient(1px 1px at 40% 30%, #c084fc33, transparent),
+		radial-gradient(1px 1px at 60% 12%, #e0aaff44, transparent),
+		radial-gradient(1px 1px at 75% 60%, #7dd3fc33, transparent),
+		radial-gradient(1px 1px at 85% 20%, #c084fc55, transparent),
+		radial-gradient(1px 1px at 92% 45%, #e0aaff33, transparent),
+		radial-gradient(1px 1px at 15% 70%, #7dd3fc44, transparent),
+		radial-gradient(1px 1px at 55% 80%, #c084fc33, transparent),
+		radial-gradient(1px 1px at 33% 90%, #e0aaff55, transparent);
+}
+
+@keyframes bolt-pulse {
+	0%,
+	100% {
+		box-shadow:
+			0 0 8px #a855f7,
+			0 0 20px #a855f7aa,
+			0 0 40px #7b2fbe44;
+	}
+	50% {
+		box-shadow:
+			0 0 12px #c084fc,
+			0 0 30px #c084fccc,
+			0 0 60px #a855f766;
+	}
+}
+
+.gateway-glow {
+	animation: bolt-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes scanline {
+	0% {
+		transform: translateY(-100%);
+	}
+	100% {
+		transform: translateY(100vh);
+	}
 }
