@@ -1,14 +1,25 @@
-# End Gateway Calculator
+# End Gateway Spawn Manipulation Calculator
 
-A browser-based tool for Minecraft Java Edition players to calculate **End Gateway** destination coordinates and plan the optimal trajectory to activate them.
+A browser-based tool for Minecraft Java Edition players to calculate End Gateway destination coordinates and plan optimal trajectories to control where gateways spawn.
 
 ---
 
 ## What are End Gateways?
 
-End Gateways are portals that appear in the outer islands of The End after defeating the Ender Dragon. There are **20 predetermined gateway positions** arranged in a ring around the central island (radius ≈ 96 blocks). Each gateway teleports the player to a corresponding platform in the outer End islands at a distance between **768 and 1280 blocks** from the center.
+End Gateways are portals that appear at the edge of the main island of The End after defeating the Ender Dragon, as well as throughout the outer islands. There are **20 predetermined End Gateway positions** arranged in a ring around the central island (radius ≈ 96 blocks). Each End Gateway teleports the player to a corresponding platform in the outer End islands, at a distance between **768 and 1280 blocks** from the center.
 
-**Dataless gateways** have no stored destination yet. When the player enters one, the game calculates the destination on the fly based on the angle from the center — which is what this calculator replicates.
+There are three types of End Gateways:
+
+* **Dataless End Gateways** have no stored destination. When a player enters one, the game calculates the destination dynamically based on the angle from the center — which is the behavior this calculator replicates. This type of End Gateway is the focus of this tool.
+
+* **Linked End Gateways** are generated when a player travels through a Dataless End Gateway. Each Linked End Gateway is permanently associated with its corresponding origin End Gateway.
+
+* **Outer End Gateways** appear throughout the outer End islands and teleport the player to an obsidian platform.
+
+### How to generate a Dataless End Gateway?
+
+By default, there are 20 reserved positions for End Gateways that are always generated after defeating the Ender Dragon. However, it is also possible to generate additional Dataless End Gateways by manipulating world generation mechanics, converting an Outer End Gateway into a Dataless End Gateway (see [Threadstone 1.12](https://github.com/Threadstone-Wiki/Threadstone-Wiki/blob/main/pages/hyperlink.md)).
+
 
 ---
 
