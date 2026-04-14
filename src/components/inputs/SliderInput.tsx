@@ -1,13 +1,33 @@
+/** Props accepted by the {@link SliderInput} component. */
 interface SliderInputProps {
+	/** Current slider value. */
 	value: number;
+	/** Minimum allowed value. Defaults to `0`. */
 	min?: number;
+	/** Maximum allowed value. Defaults to `100`. */
 	max?: number;
+	/** Change handler wired to the hidden `<input type="range">`. */
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	/** Pre-computed fill percentage (0–100). When omitted it is derived from
+	 * `value`, `min`, and `max`. Useful when the parent uses a non-linear scale. */
 	sliderPercent?: number;
+	/** Optional extra CSS classes applied to the outer container `<div>`. */
 	className?: string;
+	/** Accessible label passed to `aria-label` on the range `<input>`. */
 	ariaLabel?: string;
 }
 
+/**
+ * Custom-styled range slider with a gradient fill track and a glowing thumb.
+ *
+ * @remarks
+ * The native `<input type="range">` is rendered with `opacity-0` over the
+ * visual track so the browser handles all pointer and keyboard interactions
+ * while the custom thumb and fill layer provide the visual presentation.
+ *
+ * @param props - Component props; see {@link SliderInputProps}.
+ * @returns A `<div>` with a custom-drawn track and an invisible native range input.
+ */
 export function SliderInput({
 	value,
 	min = 0,

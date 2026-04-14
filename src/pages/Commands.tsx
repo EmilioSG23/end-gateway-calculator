@@ -2,29 +2,58 @@ import { CopyIcon } from "@/icons/Copy";
 import type { Coords } from "@/types/Coords";
 import { useCallback, useState } from "react";
 
+/** Props accepted by the {@link Commands} component. */
 interface CommandsProps {
+	/** Gateway origin coordinates. */
 	origin: Coords;
+	/** Destination coordinates. */
 	finalCoords: Coords;
+	/** Ordered list of block coordinates forming the build path. */
 	blocks: Coords[];
 }
 
-interface CommandEntry {
+/** A single copyable command entry rendered inside a {@link CommandGroup}. */
+interface Command {
+	/** Unique identifier used to track the "copied" state per row. */
 	id: string;
+	/** The raw command string displayed and copied to clipboard. */
 	cmd: string;
 }
 
+/** Props accepted by the {@link CommandGroup} component. */
 interface CommandGroupProps {
+	/** Heading text of the accordion section. */
 	title: string;
+	/** Short badge label (e.g. `"vanilla"` or `"worldedit"`). */
 	tag: string;
+	/** Tailwind classes applied to the badge for colour theming. */
 	tagColor: string;
+	/** Paragraph of descriptive text shown below the header. */
 	description: string;
-	commands: CommandEntry[];
+	/** Array of command entries to render inside the group. */
+	commands: Command[];
+	/** ID of the most recently copied command, or `null`. */
 	copied: string | null;
+	/**
+	 * Callback triggered when the user clicks the copy button on a single row.
+	 *
+	 * @param text - The command string to copy.
+	 * @param id   - The command entry ID to mark as "copied".
+	 */
 	onCopy: (text: string, id: string) => void;
+	/** Callback triggered when the user clicks the "Copy All" button. */
 	onCopyAll: () => void;
+	/** Whether the accordion starts open. Defaults to `true`. */
 	defaultOpen?: boolean;
 }
 
+/**
+ * Animated chevron icon that rotates when the accordion is open.
+ *
+ * @param props      - Component props.
+ * @param props.open - When `true`, the chevron is rotated 180°.
+ * @returns An `<svg>` chevron element.
+ */
 function ChevronIcon({ open }: { open: boolean }) {
 	return (
 		<svg
@@ -43,12 +72,21 @@ function ChevronIcon({ open }: { open: boolean }) {
 	);
 }
 
+/**
+ * Single copyable command row inside a {@link CommandGroup}.
+ *
+ * @param props        - Component props.
+ * @param props.entry  - The command entry to render.
+ * @param props.copied - ID of the last-copied command (controls the tick state).
+ * @param props.onCopy - Callback to copy this entry's command string.
+ * @returns A styled row with the command code and a copy button.
+ */
 function CommandRow({
 	entry,
 	copied,
 	onCopy,
 }: {
-	entry: CommandEntry;
+	entry: Command;
 	copied: string | null;
 	onCopy: (text: string, id: string) => void;
 }) {
@@ -80,6 +118,12 @@ function CommandRow({
 	);
 }
 
+/**
+ * Collapsible accordion section containing a list of {@link CommandRow} items.
+ *
+ * @param props - Component props; see {@link CommandGroupProps}.
+ * @returns An accordion card with a sticky header and an optional command list.
+ */
 function CommandGroup({
 	title,
 	tag,
@@ -146,6 +190,22 @@ function CommandGroup({
 	);
 }
 
+/**
+ * Modal panel that displays Minecraft commands for the computed gateway path.
+ *
+ * @remarks
+ * Provides three groups of commands organised as collapsible accordions:
+ * 1. **Vanilla** — utility commands (`/tp`, F3 hint).
+ * 2. **WorldEdit** — a `//line` command and clearing commands.
+ * 3. **Vanilla setblock** — one `/setblock` command per block in the path.
+ *
+ * A Y-level integer input controls the build height used in WorldEdit and
+ * setblock commands. Each command row has an individual copy button, and
+ * each group has a "Copy All" button.
+ *
+ * @param props            - Component props; see {@link CommandsProps}.
+ * @returns A scrollable panel of accordion command groups.
+ */
 export function Commands({ origin, finalCoords, blocks }: CommandsProps) {
 	const [yLevel, setYLevel] = useState<number>(0);
 	const [copied, setCopied] = useState<string | null>(null);
@@ -158,7 +218,7 @@ export function Commands({ origin, finalCoords, blocks }: CommandsProps) {
 	}, []);
 
 	// Minecraft - utils commands
-	const mcCommands: CommandEntry[] = [
+	const mcCommands: Command[] = [
 		{ id: "tp-origin", cmd: `/tp @p ${origin.x} ${yLevel ?? "~"} ${origin.z}` },
 		{ id: "tp-final", cmd: `/tp @p ${finalCoords.x} ${yLevel ?? "~"} ${finalCoords.z}` },
 		{ id: "set-origin-gateway", cmd: `/setblock ${origin.x} ${yLevel} ${origin.z} end_gateway` },
@@ -169,19 +229,19 @@ export function Commands({ origin, finalCoords, blocks }: CommandsProps) {
 	];
 
 	// WorldEdit — line between origin and destination (3 commands)
-	const weLineCommands: CommandEntry[] = [
+	const weLineCommands: Command[] = [
 		{ id: "we-pos1", cmd: `//pos1 ${origin.x},${yLevel},${origin.z}` },
 		{ id: "we-pos2", cmd: `//pos2 ${finalCoords.x},${yLevel},${finalCoords.z}` },
 		{ id: "we-line", cmd: `//line slime_block` },
 	];
 
 	// Vanilla — individual /setblock per computed coordinate
-	const vanillaPathLineCommands: CommandEntry[] = blocks.map((b, i) => ({
+	const vanillaPathLineCommands: Command[] = blocks.map((b, i) => ({
 		id: `v-setblock-${i}`,
 		cmd: `/setblock ${b.x} ${yLevel} ${b.z} slime_block`,
 	}));
 
-	const copyAll = (commands: CommandEntry[]) => {
+	const copyAll = (commands: Command[]) => {
 		const text = commands.map((c) => c.cmd).join("\n");
 		navigator.clipboard.writeText(text).then(() => {
 			setCopied("__all__");

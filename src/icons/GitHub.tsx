@@ -1,3 +1,14 @@
+/**
+ * GitHub logo SVG icon.
+ *
+ * @remarks
+ * Forwards all standard SVG props (e.g. `className`, `width`, `height`) to
+ * the underlying `<svg>` element. Uses `fill="currentColor"` so it inherits
+ * the parent text colour.
+ *
+ * @param props - Any props accepted by `React.SVGProps<SVGSVGElement>`.
+ * @returns An `<svg>` element rendering the GitHub mark.
+ */
 export function GitHubIcon(props: React.SVGProps<SVGSVGElement>) {
 	return (
 		<svg viewBox="0 0 16 16" fill="currentColor" {...props}>

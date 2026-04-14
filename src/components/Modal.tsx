@@ -3,22 +3,36 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
-/**
- * Props para el componente `Modal`.
- */
+/** Props accepted by the {@link Modal} component. */
 interface ModalProps {
+	/** Whether the modal is currently visible. */
 	isOpen: boolean;
+	/** Content to render inside the modal body. */
 	body: ReactNode;
+	/** Modal panel width in pixels. Defaults to `384`. */
 	width?: number;
+	/** Callback invoked when the backdrop or a close trigger is activated. */
 	onClose: () => void;
 }
 
 /**
- * Modal - Diálogo centrado con overlay y animación.
- * @param {ModalProps} props
- * @returns Modal centrado o `null` si `isOpen` es `false`.
+ * Centred overlay modal with entrance animation.
+ *
+ * @remarks
+ * When `isOpen` transitions to `true`, the component mounts and schedules a
+ * 10 ms timeout before setting `mounted = true`, which triggers the CSS
+ * opacity transition.
+ * When `isOpen` goes back to `false`, `mounted` is cleared synchronously via
+ * a microtask so the state resets immediately without a visible flash.
+ *
+ * @param props          - Component props; see {@link ModalProps}.
+ * @returns The modal panel wrapped in a fixed-position overlay, or `null`
+ *   when `isOpen` is `false`.
+ *
  * @example
+ * ```tsx
  * <Modal isOpen={isOpen} body={<div />} onClose={() => setIsOpen(false)} width={384} />
+ * ```
  */
 export function Modal({ isOpen, body, width = 384, onClose }: ModalProps) {
 	const [mounted, setMounted] = useState(false);

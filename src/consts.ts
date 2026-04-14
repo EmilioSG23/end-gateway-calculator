@@ -1,13 +1,34 @@
 import type { Coords } from "@/types/Coords";
 
+/** Maximum allowed target distance in blocks (hard upper bound for the slider). */
 export const MAX_DISTANCE = 1280;
+
+/**
+ * Suggested "medium" target distance in blocks.
+ * Used as the default initial distance value in {@link useGatewayCalculator}.
+ */
 export const MEDIUM_DISTANCE = 1024;
+
+/** Minimum allowed target distance in blocks (hard lower bound for the slider). */
 export const MIN_DISTANCE = 768;
 
+/** Size of one Minecraft chunk in blocks. Used for the chunk grid overlay. */
 export const CHUNK_SIZE = 16;
 
+/**
+ * URL of the project's GitHub repository.
+ * The GitHub button in the header is hidden when this value is an empty string.
+ */
 export const GIT_HUB_URL = "";
 
+/**
+ * Predefined world coordinates of all 20 End Gateways that spawn after
+ * defeating the Ender Dragon.
+ *
+ * @remarks
+ * These coordinates are deterministic and consistent across all Minecraft
+ * Java Edition worlds. They are rendered as ring dots on the End Map.
+ */
 export const END_GATEWAYS: Coords[] = [
 	{ x: 96, z: 0 },
 	{ x: 91, z: 29 },

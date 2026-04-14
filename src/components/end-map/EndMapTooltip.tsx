@@ -1,9 +1,23 @@
 import type { TooltipState } from "@/types/MapTypes";
 
+/** Props accepted by the {@link EndMapTooltip} component. */
 interface EndMapTooltipProps {
+	/** Current tooltip state. The tooltip renders nothing when `visible` is `false`. */
 	tooltip: TooltipState;
 }
 
+/**
+ * Displays a floating tooltip over a hovered dot on the End Map canvas.
+ *
+ * @remarks
+ * Positioned absolutely so it must be placed inside a `position: relative`
+ * container. The horizontal position is flipped when the dot is in the
+ * right 60% of the canvas to avoid overflowing the edge.
+ * Returns `null` when `tooltip.visible` is `false`.
+ *
+ * @param props         - Component props; see {@link EndMapTooltipProps}.
+ * @returns A positioned `<div>` with the tooltip card, or `null`.
+ */
 export function EndMapTooltip({ tooltip }: EndMapTooltipProps) {
 	if (!tooltip.visible) return null;
 

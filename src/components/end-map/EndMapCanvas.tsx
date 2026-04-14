@@ -1,3 +1,5 @@
+import type { Coords } from "@/types/Coords";
+import type { WorldToCanvas } from "@/utils/mapDrawHelpers";
 import {
 	drawBuildLine,
 	drawCompass,
@@ -7,27 +9,51 @@ import {
 	drawGrid,
 	drawOriginPoint,
 } from "@/utils/mapDrawHelpers";
-import type { WorldToCanvas } from "@/utils/mapDrawHelpers";
-import type { Coords } from "@/types/Coords";
 import { useCallback, useEffect, useRef } from "react";
 
+/** Props accepted by the {@link EndMapCanvas} component. */
 interface EndMapCanvasProps {
+	/** Gateway origin coordinates. */
 	origin: Coords;
+	/** Destination coordinates, or `null` when not yet calculated. */
 	final: Coords | null;
+	/** Ordered list of block coordinates forming the build path. */
 	blocks: Coords[];
+	/** Current zoom scale factor. */
 	zoom: number;
+	/** Current pan offset in world blocks. */
 	pan: { x: number; y: number };
+	/** Converts world block coordinates to canvas pixel coordinates. */
 	worldToCanvas: WorldToCanvas;
+	/** Mouse-down handler — starts a pan drag. */
 	onMouseDown: (e: React.MouseEvent) => void;
+	/** Mouse-move handler — pans while dragging or triggers hit-testing upstream. */
 	onMouseMove: (e: React.MouseEvent<HTMLCanvasElement>) => void;
+	/** Mouse-up handler — ends a pan drag. */
 	onMouseUp: () => void;
+	/** Mouse-leave handler — hides tooltip and ends drag. */
 	onMouseLeave: () => void;
+	/** Touch-start handler for single-finger pan. */
 	onTouchStart: (e: React.TouchEvent) => void;
+	/** Touch-move handler for single-finger pan. */
 	onTouchMove: (e: React.TouchEvent) => void;
+	/** Touch-end handler — clears the stored touch position. */
 	onTouchEnd: () => void;
+	/** Wheel handler — zooms the canvas. */
 	onWheel: (e: React.WheelEvent) => void;
 }
 
+/**
+ * Canvas-based End Map renderer with pan/zoom support.
+ *
+ * @remarks
+ * Uses a `ResizeObserver` to keep the canvas pixel dimensions in sync with
+ * its container, triggering a redraw whenever the container resizes.
+ * All drawing is performed by the helpers in `@/utils/mapDrawHelpers`.
+ *
+ * @param props - Component props; see {@link EndMapCanvasProps}.
+ * @returns A `<div>` container holding a `<canvas>` element.
+ */
 export function EndMapCanvas({
 	origin,
 	final,
@@ -47,6 +73,10 @@ export function EndMapCanvas({
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 
+	/**
+	 * Redraws the entire canvas using the current props.
+	 * Memoised so it only re-runs when any of the relevant values change.
+	 */
 	const draw = useCallback(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;

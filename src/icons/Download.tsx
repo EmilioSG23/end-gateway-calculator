@@ -1,3 +1,13 @@
+/**
+ * Download arrow SVG icon.
+ *
+ * @remarks
+ * Forwards all standard SVG props to the underlying `<svg>` element.
+ * Strokes use `currentColor` so the icon inherits the parent text colour.
+ *
+ * @param props - Any props accepted by `React.SVGProps<SVGSVGElement>`.
+ * @returns An `<svg>` element rendering a download arrow.
+ */
 export function DownloadIcon(props: React.SVGProps<SVGSVGElement>) {
 	return (
 		<svg viewBox="0 0 24 24" fill="none" {...props}>

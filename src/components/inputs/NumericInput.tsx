@@ -1,14 +1,39 @@
 import { useEffect, useState } from "react";
 
+/** Props accepted by the {@link NumericInput} component. */
 interface NumericInputProps {
+	/** Current numeric value (controlled from the parent). */
 	value: number;
+	/** Minimum clamp boundary. No clamping applied when omitted. */
 	min?: number;
+	/** Maximum clamp boundary. No clamping applied when omitted. */
 	max?: number;
+	/**
+	 * Callback invoked with the committed, clamped, and floor-rounded value.
+	 * Called on blur and when the user presses Enter.
+	 *
+	 * @param n - The normalised integer value.
+	 */
 	onCommit: (n: number) => void;
+	/** Optional extra CSS classes applied to the `<input>` element. */
 	className?: string;
+	/** Accessible label passed to `aria-label`. */
 	ariaLabel?: string;
 }
 
+/**
+ * Numeric input with commit-on-blur or Enter key press.
+ *
+ * @remarks
+ * Maintains an internal draft string state so the user can type freely
+ * without intermediate values propagating to the parent. On commit the
+ * draft is parsed, clamped to `[min, max]`, floored, and passed to
+ * `onCommit`. Invalid or empty input is discarded and the field reverts
+ * to the last valid `value` prop.
+ *
+ * @param props - Component props; see {@link NumericInputProps}.
+ * @returns A styled `<input type="number">` element.
+ */
 export function NumericInput({
 	value,
 	min,

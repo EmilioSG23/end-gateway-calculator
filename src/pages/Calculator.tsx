@@ -13,6 +13,20 @@ import { GatewayIcon } from "@/icons/Gateway";
 import { Commands } from "@/pages/Commands";
 import { DOWNLOAD_FORMATS } from "@/services/download";
 
+/**
+ * Main calculator page.
+ *
+ * @remarks
+ * Orchestrates the entire application UI in a two-panel layout:
+ * - **Left panel** (`<aside>`): gateway origin inputs, distance slider,
+ *   computed stat cards, block list, and export controls.
+ * - **Right section**: the interactive {@link EndMap} canvas.
+ *
+ * State is fully managed by {@link useGatewayCalculator}. The Commands modal
+ * is opened via {@link useModal} when the user clicks "View Commands".
+ *
+ * @returns The full-page calculator layout.
+ */
 export function Calculator() {
 	const {
 		originX,

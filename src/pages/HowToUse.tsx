@@ -1,10 +1,17 @@
 import { type ReactNode, useState } from "react";
 
+/** Tab identifier for the How to Use guide. */
 type Tab = "app" | "minecraft";
 
+/**
+ * A single numbered step in the How to Use guide.
+ */
 interface Step {
+	/** Display label for the step number (e.g. `"01"`, `"I"`). */
 	icon: string;
+	/** Step heading. */
 	title: string;
+	/** Step body content. May include inline JSX for links. */
 	desc: ReactNode;
 }
 
@@ -79,6 +86,16 @@ const MINECRAFT_STEPS: Step[] = [
 	},
 ];
 
+/**
+ * How to Use guide rendered inside the application modal.
+ *
+ * @remarks
+ * Displays a tab-based guide (`"app"` and `"minecraft"`) with numbered steps.
+ * Each tab's steps are sourced from {@link APP_STEPS} and
+ * {@link MINECRAFT_STEPS} respectively.
+ *
+ * @returns A `<div>` modal panel with tab navigation and a step list.
+ */
 export function HowToUse() {
 	const [active, setActive] = useState<Tab>("app");
 

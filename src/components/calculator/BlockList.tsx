@@ -1,9 +1,25 @@
 import type { Coords } from "@/types/Coords";
 
+/** Props accepted by the {@link BlockList} component. */
 interface BlockListProps {
+	/** Ordered array of block coordinates to display. */
 	blocks: Coords[];
 }
 
+/**
+ * Scrollable table listing every block in the computed build path.
+ *
+ * @remarks
+ * Returns `null` when `blocks` is empty, so the section is invisible when
+ * no calculation has been performed. The table header is sticky so column
+ * labels remain visible while scrolling through long paths. The container
+ * uses CSS overflow scroll (not virtual rendering) and is capped at
+ * `max-h-60`.
+ *
+ * @param props        - Component props; see {@link BlockListProps}.
+ * @param props.blocks - Ordered list of coordinates to render.
+ * @returns A scrollable table of `#`, `X`, `Z` rows, or `null`.
+ */
 export function BlockList({ blocks }: BlockListProps) {
 	if (blocks.length === 0) return null;
 

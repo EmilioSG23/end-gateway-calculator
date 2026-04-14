@@ -1,3 +1,18 @@
+/**
+ * Displays a single labelled metric card.
+ *
+ * @remarks
+ * Used in the statistics row of the calculator panel to show derived values
+ * such as angle, distance, and destination coordinates. When `accent` is
+ * `true`, the card uses the accent border and highlight colour to draw
+ * attention to the primary stat.
+ *
+ * @param props        - Component props.
+ * @param props.label  - Short uppercase label shown above the value.
+ * @param props.value  - The metric value string to display.
+ * @param props.accent - When `true`, applies accent styling. Defaults to `false`.
+ * @returns A styled stat card `<div>`.
+ */
 export function StatCard({
 	label,
 	value,

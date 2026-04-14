@@ -2,13 +2,30 @@ import { NumericInput } from "@/components/inputs/NumericInput";
 import { SliderInput } from "@/components/inputs/SliderInput";
 import { MAX_DISTANCE, MIN_DISTANCE } from "@/consts";
 
+/** Props accepted by the {@link DistanceSlider} component. */
 interface DistanceSliderProps {
+	/** Current distance value in blocks. */
 	value: number;
+	/** CSS `--slider-percent` value (0–100) used to fill the range track. */
 	sliderPercent: number;
+	/** Change handler for the numeric text input (receives a synthetic event). */
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	/** Change handler for the range slider `<input>`. */
 	onSlider: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+/**
+ * Combined distance control grouping a range slider and a numeric input.
+ *
+ * @remarks
+ * Keeps both controls in sync: the slider updates via `onSlider` while the
+ * numeric input fires `onChange` by fabricating a synthetic event when the
+ * user commits a value. Both are clamped between {@link MIN_DISTANCE} and
+ * {@link MAX_DISTANCE}.
+ *
+ * @param props - Component props; see {@link DistanceSliderProps}.
+ * @returns A flex column containing the range labels, slider, and numeric input.
+ */
 export function DistanceSlider({ value, sliderPercent, onChange, onSlider }: DistanceSliderProps) {
 	return (
 		<div className="flex flex-col gap-3">

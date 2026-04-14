@@ -1,3 +1,18 @@
+/**
+ * Labelled numeric text field for entering a gateway coordinate axis.
+ *
+ * @remarks
+ * Renders a `<label>` wrapping a `<number>` input. Spinner arrows are hidden
+ * via CSS for a cleaner look. The raw string value is surfaced to the parent
+ * so partial or negative inputs are preserved during typing.
+ *
+ * @param props          - Component props.
+ * @param props.label    - Axis label displayed above the input (e.g. `"X"`).
+ * @param props.value    - Controlled raw string value of the input.
+ * @param props.onChange - Callback receiving the new raw string on every
+ *   input change event.
+ * @returns A `<label>` element containing the axis label and the input.
+ */
 export function CoordInput({
 	label,
 	value,

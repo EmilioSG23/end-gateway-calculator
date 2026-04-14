@@ -1,7 +1,6 @@
 import { BLOCK_SIZE } from "@/hooks/useMapInteraction";
 import type { Coords } from "@/types/Coords";
 
-// End dimension zone constants ──────────────────────────────────────────────
 /** Approximate radius of the central End island (blocks). */
 export const END_ISLAND_RADIUS = 100;
 /** Distance at which outer islands begin (blocks). */
@@ -12,6 +11,17 @@ const ENDSTONE_CENTER = "rgba(200,192,122,0.15)"; // central island (light)
 const ENDSTONE_OUTER = "rgba(200,192,122,0.10)"; // outer islands (dense)
 const ENDSTONE_BORDER = "rgba(120,100,50,0.85)"; // border stroke for zones
 
+/**
+ * Function signature for the coordinate-space conversion utility returned by
+ * {@link useMapInteraction}. Converts world block coordinates into canvas
+ * pixel coordinates accounting for the current zoom level and pan offset.
+ *
+ * @param wx - World X coordinate in blocks.
+ * @param wz - World Z coordinate in blocks.
+ * @param w  - Canvas width in pixels.
+ * @param h  - Canvas height in pixels.
+ * @returns Object with `cx` (canvas X) and `cy` (canvas Y) pixel values.
+ */
 export type WorldToCanvas = (
 	wx: number,
 	wz: number,
@@ -19,16 +29,21 @@ export type WorldToCanvas = (
 	h: number,
 ) => { cx: number; cy: number };
 
-// Zone helpers
-
+/**
+ * Classifies an End dimension position into one of three named zones based on
+ * its radial distance from the world origin.
+ *
+ * @param x - Block X coordinate.
+ * @param z - Block Z coordinate.
+ * @returns Human-readable zone name: `"Central Island"`, `"Void"`, or
+ *   `"Outer Islands"`.
+ */
 export function getEndZone(x: number, z: number): string {
 	const r = Math.hypot(x, z);
 	if (r < END_ISLAND_RADIUS) return "Central Island";
 	if (r < END_OUTER_START) return "Void";
 	return "Outer Islands";
 }
-
-// Draw helpers
 
 /**
  * Fills the canvas with the three End dimension zones using endstone/25 tinting:
@@ -75,6 +90,14 @@ export function drawEndZones(
 	ctx.restore();
 }
 
+/**
+ * Draws a small compass rose in the top-right corner of the canvas showing
+ * the +X, +Z, -X and -Z axis directions that match the Minecraft coordinate
+ * system used throughout the map.
+ *
+ * @param ctx - The 2D rendering context of the target canvas.
+ * @param W   - Total canvas width in pixels (used to position the rose).
+ */
 export function drawCompass(ctx: CanvasRenderingContext2D, W: number): void {
 	const cx = W - 44;
 	const cy = 44;
@@ -108,7 +131,19 @@ export function drawCompass(ctx: CanvasRenderingContext2D, W: number): void {
 }
 
 /**
- * Draw chunk grid lines (every 16 blocks). Separated so drawGrid stays smaller.
+ * Draws the chunk-boundary grid lines (every 16 blocks) on the canvas.
+ *
+ * @remarks
+ * This is extracted from {@link drawGrid} so the main grid function stays
+ * focused. The alpha of the lines is scaled with `zoom` so they fade out
+ * when too many lines would overlap at low zoom levels.
+ *
+ * @param ctx     - The 2D rendering context of the target canvas.
+ * @param W       - Canvas width in pixels.
+ * @param H       - Canvas height in pixels.
+ * @param originX - Canvas X pixel corresponding to world coordinate (0, 0).
+ * @param originY - Canvas Y pixel corresponding to world coordinate (0, 0).
+ * @param zoom    - Current zoom scale factor.
  */
 export function drawChunksGrid(
 	ctx: CanvasRenderingContext2D,
@@ -140,6 +175,23 @@ export function drawChunksGrid(
 	ctx.stroke();
 }
 
+/**
+ * Draws the full background grid for the End Map including the per-block
+ * lines, chunk-boundary lines, and the two main axes (X and Z).
+ *
+ * @remarks
+ * The per-block grid is only rendered when `BLOCK_SIZE * zoom` is large
+ * enough to be visible. Chunk boundaries are skipped at very low zoom levels
+ * (when `chunkSizePx < 4`) to avoid visual noise.
+ *
+ * @param ctx - The 2D rendering context of the target canvas.
+ * @param W   - Canvas width in pixels.
+ * @param H   - Canvas height in pixels.
+ * @param zoom - Current zoom scale factor.
+ * @param pan  - Current pan offset in **world** blocks (`{ x, y }`).
+ * @returns The canvas-space pixel coordinates of the world origin
+ *   `{ originX, originY }`, which are needed by downstream draw functions.
+ */
 export function drawGrid(
 	ctx: CanvasRenderingContext2D,
 	W: number,
@@ -196,7 +248,16 @@ export function drawGrid(
 	return { originX, originY };
 }
 
-/** Pixelated (Minecraft-style) rings at the 768/1024 build-line boundaries. */
+/**
+ * Draws dashed circular rings at the minimum (768 blocks) and maximum (1024
+ * blocks) valid gateway build-line distances. These act as visual reference
+ * boundaries on the End Map.
+ *
+ * @param ctx     - The 2D rendering context of the target canvas.
+ * @param originX - Canvas X pixel corresponding to world coordinate (0, 0).
+ * @param originY - Canvas Y pixel corresponding to world coordinate (0, 0).
+ * @param zoom    - Current zoom scale factor.
+ */
 export function drawGatewayRings(
 	ctx: CanvasRenderingContext2D,
 	originX: number,
@@ -222,6 +283,20 @@ export function drawGatewayRings(
 	ctx.restore();
 }
 
+/**
+ * Renders the computed path of build blocks as a glowing polyline. When the
+ * zoom is high enough each individual block is also rendered as a small filled
+ * square to match the Minecraft block grid.
+ *
+ * @param ctx           - The 2D rendering context of the target canvas.
+ * @param blocks        - Ordered list of block coordinates returned by
+ *   {@link calculate}.
+ * @param worldToCanvas - Coordinate conversion function from
+ *   {@link useMapInteraction}.
+ * @param W             - Canvas width in pixels.
+ * @param H             - Canvas height in pixels.
+ * @param zoom          - Current zoom scale factor.
+ */
 export function drawBuildLine(
 	ctx: CanvasRenderingContext2D,
 	blocks: Coords[],
@@ -259,9 +334,23 @@ export function drawBuildLine(
 }
 
 /**
- * Draws the destination point and the direction ray from world (0,0).
- * @param originX Canvas X of world coordinate (0, 0).
- * @param originY Canvas Y of world coordinate (0, 0).
+ * Draws the destination point (calculated final coordinates) and a dashed
+ * direction ray from the world origin (0, 0) to the destination.
+ *
+ * @remarks
+ * Renders a radial gradient glow, a filled square marker, and a coordinate
+ * label when zoom is high enough. The ray helps users visually confirm the
+ * angle on the map.
+ *
+ * @param ctx           - The 2D rendering context of the target canvas.
+ * @param final         - Destination world coordinates.
+ * @param worldToCanvas - Coordinate conversion function from
+ *   {@link useMapInteraction}.
+ * @param W             - Canvas width in pixels.
+ * @param H             - Canvas height in pixels.
+ * @param zoom          - Current zoom scale factor.
+ * @param originX       - Canvas X pixel corresponding to world coordinate (0, 0).
+ * @param originY       - Canvas Y pixel corresponding to world coordinate (0, 0).
  */
 export function drawFinalPoint(
 	ctx: CanvasRenderingContext2D,
@@ -309,6 +398,19 @@ export function drawFinalPoint(
 	}
 }
 
+/**
+ * Draws the origin gateway point on the canvas — the starting End Gateway
+ * whose coordinates the user entered. Renders a cyan glow, a square marker,
+ * and a coordinate label when zoom is high enough.
+ *
+ * @param ctx           - The 2D rendering context of the target canvas.
+ * @param origin        - Origin gateway world coordinates.
+ * @param worldToCanvas - Coordinate conversion function from
+ *   {@link useMapInteraction}.
+ * @param W             - Canvas width in pixels.
+ * @param H             - Canvas height in pixels.
+ * @param zoom          - Current zoom scale factor.
+ */
 export function drawOriginPoint(
 	ctx: CanvasRenderingContext2D,
 	origin: Coords,

@@ -1,13 +1,33 @@
+/** Props accepted by the {@link EndMapControls} component. */
 interface EndMapControlsProps {
+	/** Current zoom scale factor, displayed in the zoom indicator. */
 	zoom: number;
+	/** When `true`, the "Go to Destination" button is rendered. */
 	hasFinal: boolean;
+	/** Callback to zoom in one step. */
 	onZoomIn: () => void;
+	/** Callback to zoom out one step. */
 	onZoomOut: () => void;
+	/** Callback to reset the pan and zoom to their defaults. */
 	onReset: () => void;
+	/** Callback to pan the view so the origin gateway is centred. */
 	onGoToOrigin: () => void;
+	/** Callback to pan the view so the destination point is centred. */
 	onGoToFinal: () => void;
 }
 
+/**
+ * Overlay UI controls rendered on top of the End Map canvas.
+ *
+ * @remarks
+ * Renders three groups of absolute-positioned elements:
+ * - Bottom-right: zoom-in, zoom-out, and reset buttons.
+ * - Bottom-left: "Go to Origin" and (conditionally) "Go to Destination" buttons.
+ * - Top-left: a colour legend and zoom percentage indicator.
+ *
+ * @param props - Component props; see {@link EndMapControlsProps}.
+ * @returns A React fragment containing all three control groups.
+ */
 export function EndMapControls({
 	zoom,
 	hasFinal,

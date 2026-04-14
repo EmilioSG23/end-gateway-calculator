@@ -4,6 +4,14 @@ import { GatewayIcon } from "@/icons/Gateway";
 import { GitHubIcon } from "@/icons/GitHub";
 import { HowToUse } from "@/pages/HowToUse";
 
+/**
+ * Internal action button used inside the application {@link Header}.
+ *
+ * @param props          - Component props.
+ * @param props.onClick  - Click handler for the button.
+ * @param props.children - Button label content.
+ * @returns A styled `<button>` element (hidden on small screens).
+ */
 function Button({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
 	return (
 		<button
@@ -15,6 +23,17 @@ function Button({ onClick, children }: { onClick: () => void; children: React.Re
 	);
 }
 
+/**
+ * Application header bar.
+ *
+ * @remarks
+ * Renders the app title and icon on the left, and conditionally shows a
+ * GitHub link button (only when {@link GIT_HUB_URL} is non-empty) and a
+ * "How to use" guide button on the right. The guide opens a {@link Modal}
+ * populated with {@link HowToUse} via the global modal context.
+ *
+ * @returns A `<header>` element spanning the full page width.
+ */
 export function Header() {
 	const { openModal, setWidth } = useModal();
 
