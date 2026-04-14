@@ -19,7 +19,7 @@ export const CHUNK_SIZE = 16;
  * URL of the project's GitHub repository.
  * The GitHub button in the header is hidden when this value is an empty string.
  */
-export const GIT_HUB_URL = "";
+export const GIT_HUB_URL = "https://github.com/EmilioSG23/end-gateway-calculator";
 
 /**
  * Predefined world coordinates of all 20 End Gateways that spawn after
