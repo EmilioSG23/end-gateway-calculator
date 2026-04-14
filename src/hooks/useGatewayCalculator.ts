@@ -1,5 +1,7 @@
 import { MAX_DISTANCE, MEDIUM_DISTANCE, MIN_DISTANCE } from "@/consts";
 import { calculate, calculateAngle, calculateFinalCoords } from "@/logic/calculate";
+import type { DOWNLOAD_FORMAT } from "@/services/download";
+import { downloadBlockList as download } from "@/services/download";
 import type { Coords } from "@/types/Coords";
 import { useCallback, useMemo, useState } from "react";
 
@@ -18,6 +20,7 @@ export interface GatewayCalculatorState {
 	setOriginZ: (v: string) => void;
 	handleDistanceInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	handleSlider: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	downloadBlockList: (format: DOWNLOAD_FORMAT) => Promise<void>;
 }
 
 export function useGatewayCalculator(): GatewayCalculatorState {
@@ -59,6 +62,13 @@ export function useGatewayCalculator(): GatewayCalculatorState {
 
 	const sliderPercent = ((distance - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE)) * 100;
 
+	const downloadBlockList = useCallback(
+		async (format: DOWNLOAD_FORMAT) => {
+			await download({ blocks, origin, distance, format });
+		},
+		[blocks, origin, distance],
+	);
+
 	return {
 		originX,
 		originZ,
@@ -74,5 +84,6 @@ export function useGatewayCalculator(): GatewayCalculatorState {
 		setOriginZ,
 		handleDistanceInput,
 		handleSlider,
+		downloadBlockList,
 	};
 }

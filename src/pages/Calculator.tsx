@@ -5,9 +5,11 @@ import { StatCard } from "@/components/calculator/StatCard";
 import { EndMap } from "@/components/EndMap";
 import { Header } from "@/components/Header";
 import { SectionHeader } from "@/components/SectionHeader";
+import DownloadSelect from "@/components/ui/DownloadSelect";
 import { CHUNK_SIZE, MAX_DISTANCE, MIN_DISTANCE } from "@/consts";
 import { useGatewayCalculator } from "@/hooks/useGatewayCalculator";
 import { GatewayIcon } from "@/icons/Gateway";
+import { DOWNLOAD_FORMATS } from "@/services/download";
 
 export function Calculator() {
 	const {
@@ -25,6 +27,7 @@ export function Calculator() {
 		setOriginZ,
 		handleDistanceInput,
 		handleSlider,
+		downloadBlockList,
 	} = useGatewayCalculator();
 
 	return (
@@ -112,7 +115,17 @@ export function Calculator() {
 						{blocks.length > 0 && (
 							<section>
 								<div className="flex items-center gap-2 mb-3">
-									<SectionHeader accentClass="bg-purpur">Block List</SectionHeader>
+									<SectionHeader accentClass="bg-purpur">
+										Block List
+										<div className="ml-4 inline-flex items-center">
+											<DownloadSelect
+												options={DOWNLOAD_FORMATS}
+												onDonwload={downloadBlockList}
+												placeholder="Download as..."
+												title="Download block list"
+											/>
+										</div>
+									</SectionHeader>
 									<span className="ml-auto text-[10px] text-muted">scroll ↓</span>
 								</div>
 								<BlockList blocks={blocks} />
