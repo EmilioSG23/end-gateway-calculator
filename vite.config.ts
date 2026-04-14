@@ -6,7 +6,7 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-	base: process.env.BASE_URL || "/",
+	base: process.env.BASE_URL || "/end-gateway-calculator/",
 	plugins: [react(), babel({ presets: [reactCompilerPreset()] }), tailwindcss()],
 	resolve: {
 		alias: {
