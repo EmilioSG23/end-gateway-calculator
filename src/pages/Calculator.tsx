@@ -8,7 +8,9 @@ import { SectionHeader } from "@/components/SectionHeader";
 import DownloadSelect from "@/components/ui/DownloadSelect";
 import { CHUNK_SIZE, MAX_DISTANCE, MIN_DISTANCE } from "@/consts";
 import { useGatewayCalculator } from "@/hooks/useGatewayCalculator";
+import { useModal } from "@/hooks/useModal";
 import { GatewayIcon } from "@/icons/Gateway";
+import { Commands } from "@/pages/Commands";
 import { DOWNLOAD_FORMATS } from "@/services/download";
 
 export function Calculator() {
@@ -29,6 +31,14 @@ export function Calculator() {
 		handleSlider,
 		downloadBlockList,
 	} = useGatewayCalculator();
+
+	const { openModal, setWidth } = useModal();
+
+	function openCommands() {
+		if (!finalCoords) return;
+		setWidth(640);
+		openModal(<Commands origin={origin} finalCoords={finalCoords} blocks={blocks} />);
+	}
 
 	return (
 		<div className="relative min-h-screen flex flex-col bg-void text-text-primary">
@@ -129,6 +139,12 @@ export function Calculator() {
 									<span className="ml-auto text-[10px] text-muted">scroll ↓</span>
 								</div>
 								<BlockList blocks={blocks} />
+								<button
+									onClick={openCommands}
+									className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2 rounded border border-purpur-dim bg-purpur/10 text-[11px] font-mono text-bolt-glow uppercase tracking-widest hover:bg-purpur/20 hover:border-purpur transition-all cursor-pointer"
+								>
+									Show Creative Commands
+								</button>
 							</section>
 						)}
 					</div>

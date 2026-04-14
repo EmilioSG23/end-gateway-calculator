@@ -144,7 +144,7 @@ export function HowToUse() {
 								<p className="text-[11px] font-bold text-text-secondary uppercase tracking-wide mb-1">
 									{step.title}
 								</p>
-								<p className="text-[12px] text-text-muted leading-relaxed break-words">
+								<p className="text-[12px] text-text-muted leading-relaxed wrap-break-word">
 									{step.desc}
 								</p>
 							</div>
