@@ -72,6 +72,18 @@ export function EndMapCanvas({
 }: EndMapCanvasProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
+	const prevBodyOverflow = useRef<string | null>(null);
+
+	const disableBodyScroll = () => {
+		if (prevBodyOverflow.current === null) prevBodyOverflow.current = document.body.style.overflow;
+		document.body.style.overflow = "hidden";
+	};
+
+	const restoreBodyScroll = () => {
+		if (prevBodyOverflow.current === null) return;
+		document.body.style.overflow = prevBodyOverflow.current;
+		prevBodyOverflow.current = null;
+	};
 
 	/**
 	 * Redraws the entire canvas using the current props.
@@ -124,14 +136,34 @@ export function EndMapCanvas({
 			<canvas
 				ref={canvasRef}
 				className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
-				onMouseDown={onMouseDown}
+				onMouseDown={(e) => {
+					disableBodyScroll();
+					onMouseDown(e);
+				}}
 				onMouseMove={onMouseMove}
-				onMouseUp={onMouseUp}
-				onMouseLeave={onMouseLeave}
-				onTouchStart={onTouchStart}
+				onMouseUp={() => {
+					onMouseUp();
+				}}
+				onMouseLeave={() => {
+					onMouseLeave();
+				}}
+				onPointerLeave={() => {
+					restoreBodyScroll();
+				}}
+				onPointerEnter={disableBodyScroll}
+				onTouchStart={(e) => {
+					disableBodyScroll();
+					onTouchStart(e);
+				}}
 				onTouchMove={onTouchMove}
-				onTouchEnd={onTouchEnd}
-				onWheelCapture={onWheel}
+				onTouchEnd={() => {
+					onTouchEnd();
+					restoreBodyScroll();
+				}}
+				onWheelCapture={(e) => {
+					disableBodyScroll();
+					onWheel(e as unknown as React.WheelEvent);
+				}}
 			/>
 		</div>
 	);

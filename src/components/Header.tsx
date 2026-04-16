@@ -54,7 +54,7 @@ export function Header() {
 						END GATEWAY CALCULATOR
 					</h1>
 					<p className="text-[10px] text-text-muted tracking-widest uppercase mt-0.5">
-						The End — Void Navigation System
+						The End — Manipulate Spawn Gateway System
 					</p>
 				</div>
 				<div className="ml-auto flex items-center gap-3">
@@ -68,11 +68,6 @@ export function Header() {
 						<span className="text-bolt font-display font-bold text-[11px]">?</span>
 						How to use
 					</Button>
-
-					<div className="hidden sm:flex items-center gap-2 text-[10px] text-muted">
-						<span className="w-1.5 h-1.5 rounded-full bg-[#a855f7] animate-pulse inline-block" />
-						PORTAL SYNC ACTIVE
-					</div>
 				</div>
 			</div>
 		</header>
