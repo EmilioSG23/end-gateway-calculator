@@ -51,7 +51,7 @@ export function Calculator() {
 	function openCommands() {
 		if (!finalCoords) return;
 		setWidth(640);
-		openModal(<Commands origin={origin} finalCoords={finalCoords} blocks={blocks} />);
+		openModal(<Commands gateway={{ origin, final: finalCoords }} path={blocks} />);
 	}
 
 	return (

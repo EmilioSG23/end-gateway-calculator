@@ -5,11 +5,12 @@ import { useCallback, useState } from "react";
 /** Props accepted by the {@link Commands} component. */
 interface CommandsProps {
 	/** Gateway origin coordinates. */
-	origin: Coords;
-	/** Destination coordinates. */
-	finalCoords: Coords;
+	gateway: {
+		origin: Coords;
+		final: Coords;
+	};
 	/** Ordered list of block coordinates forming the build path. */
-	blocks: Coords[];
+	path: Coords[];
 }
 
 /** A single copyable command entry rendered inside a {@link CommandGroup}. */
@@ -206,7 +207,7 @@ function CommandGroup({
  * @param props            - Component props; see {@link CommandsProps}.
  * @returns A scrollable panel of accordion command groups.
  */
-export function Commands({ origin, finalCoords, blocks }: CommandsProps) {
+export function Commands({ gateway, path }: CommandsProps) {
 	const [yLevel, setYLevel] = useState<number>(0);
 	const [copied, setCopied] = useState<string | null>(null);
 
@@ -219,24 +220,30 @@ export function Commands({ origin, finalCoords, blocks }: CommandsProps) {
 
 	// Minecraft - utils commands
 	const mcCommands: Command[] = [
-		{ id: "tp-origin", cmd: `/tp @p ${origin.x} ${yLevel ?? "~"} ${origin.z}` },
-		{ id: "tp-final", cmd: `/tp @p ${finalCoords.x} ${yLevel ?? "~"} ${finalCoords.z}` },
-		{ id: "set-origin-gateway", cmd: `/setblock ${origin.x} ${yLevel} ${origin.z} end_gateway` },
+		{ id: "tp-origin", cmd: `/tp @p ${gateway.origin.x} ${yLevel ?? "~"} ${gateway.origin.z}` },
+		{ id: "tp-final", cmd: `/tp @p ${gateway.final.x} ${yLevel ?? "~"} ${gateway.final.z}` },
+		{
+			id: "set-origin-gateway",
+			cmd: `/setblock ${gateway.origin.x} ${yLevel} ${gateway.origin.z} end_gateway`,
+		},
 		{
 			id: "set-final-gateway",
-			cmd: `/setblock ${finalCoords.x} ${yLevel} ${finalCoords.z} end_gateway`,
+			cmd: `/setblock ${gateway.final.x} ${yLevel} ${gateway.final.z} end_gateway`,
 		},
 	];
 
 	// WorldEdit — line between origin and destination (3 commands)
+	const initPathCoords = path.length > 0 ? path[0] : gateway.final;
+	const finalPathCoords = path.length > 0 ? path[path.length - 1] : gateway.final;
+
 	const weLineCommands: Command[] = [
-		{ id: "we-pos1", cmd: `//pos1 ${origin.x},${yLevel},${origin.z}` },
-		{ id: "we-pos2", cmd: `//pos2 ${finalCoords.x},${yLevel},${finalCoords.z}` },
+		{ id: "we-pos1", cmd: `//pos1 ${initPathCoords.x},${yLevel},${initPathCoords.z}` },
+		{ id: "we-pos2", cmd: `//pos2 ${finalPathCoords.x},${yLevel},${finalPathCoords.z}` },
 		{ id: "we-line", cmd: `//line slime_block` },
 	];
 
 	// Vanilla — individual /setblock per computed coordinate
-	const vanillaPathLineCommands: Command[] = blocks.map((b, i) => ({
+	const vanillaPathLineCommands: Command[] = path.map((b, i) => ({
 		id: `v-setblock-${i}`,
 		cmd: `/setblock ${b.x} ${yLevel} ${b.z} slime_block`,
 	}));
@@ -259,9 +266,9 @@ export function Commands({ origin, finalCoords, blocks }: CommandsProps) {
 						Minecraft Commands
 					</h2>
 					<p className="text-[10px] text-muted">
-						Place blocks along the computed path. Set the Y level before copying. It is recommended
-						to use instaminable blocks, like slime or netherrack in case you want to destroy the
-						path. This commands are useful in creative mode for testing purposes.
+						Place path along the computed path. Set the Y level before copying. It is recommended to
+						use instaminable path, like slime or netherrack in case you want to destroy the path.
+						This commands are useful in creative mode for testing purposes.
 					</p>
 				</div>
 
@@ -287,13 +294,13 @@ export function Commands({ origin, finalCoords, blocks }: CommandsProps) {
 							<span>
 								Origin{" "}
 								<span className="text-arc">
-									({origin.x}, {yLevel}, {origin.z})
+									({gateway.origin.x}, {yLevel}, {gateway.origin.z})
 								</span>
 							</span>
 							<span>
 								Final{" "}
 								<span className="text-bolt-glow">
-									({finalCoords.x}, {yLevel}, {finalCoords.z})
+									({gateway.final.x}, {yLevel}, {gateway.final.z})
 								</span>
 							</span>
 						</div>
@@ -331,7 +338,7 @@ export function Commands({ origin, finalCoords, blocks }: CommandsProps) {
 						title="Vanilla Path Line Setblock"
 						tag="vanilla minecraft"
 						tagColor="border-arc-dim text-arc"
-						description={`Places each computed block individually using /setblock. Exact path — ${blocks.length} commands total. Paste into a command block chain or a data pack function file.`}
+						description={`Places each computed block individually using /setblock. Exact path — ${path.length} commands total. Paste into a command block chain or a data pack function file.`}
 						commands={vanillaPathLineCommands}
 						copied={copied}
 						onCopy={copyText}
